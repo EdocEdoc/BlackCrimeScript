@@ -77,23 +77,24 @@ UserInputService.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton2 then Holding = false end
 end)
 
--- Right Control toggles Aimbot
+-- Keybind: Toggle Aimbot (Right Ctrl)
 UserInputService.InputBegan:Connect(function(input)
-	if input.KeyCode == Enum.KeyCode.RightShift then
-		_G.WRDClickTeleport = not _G.WRDClickTeleport
+	if input.KeyCode == Enum.KeyCode.RightControl then
+		_G.AimbotEnabled = not _G.AimbotEnabled
 		updateToggleText()
 		game.StarterGui:SetCore("SendNotification", {
-			Title = "Click Teleport Toggle";
-			Text = _G.WRDClickTeleport and "Click Teleport Enabled" or "Click Teleport Disabled";
+			Title = "Aimbot Toggle";
+			Text = _G.AimbotEnabled and "Aimbot Enabled" or "Aimbot Disabled";
 			Duration = 5;
 		})
 	end
 end)
 
--- Right Shift toggles Click Teleport
+-- Keybind: Toggle Click Teleport (Right Shift)
 UserInputService.InputBegan:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.RightShift then
 		_G.WRDClickTeleport = not _G.WRDClickTeleport
+		updateToggleText()
 		game.StarterGui:SetCore("SendNotification", {
 			Title = "Click Teleport Toggle";
 			Text = _G.WRDClickTeleport and "Click Teleport Enabled" or "Click Teleport Disabled";
@@ -151,6 +152,7 @@ UserInputService.TextBoxFocusReleased:Connect(function() Typing = false end)
 UserInputService.InputBegan:Connect(function(Input)
 	if Input.KeyCode == _G.DisableKey and not Typing then
 		_G.ESPVisible = not _G.ESPVisible
+		updateToggleText()
 		if _G.SendNotifications then
 			game.StarterGui:SetCore("SendNotification", {
 				Title = "ESP";
@@ -195,7 +197,7 @@ toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleText.RichText = true
 toggleText.TextStrokeTransparency = 0.8
 
-local function updateToggleText()
+function updateToggleText()
 	local aimbotColor = _G.AimbotEnabled and "rgb(0,255,0)" or "rgb(255,0,0)"
 	local tpColor = _G.WRDClickTeleport and "rgb(0,255,0)" or "rgb(255,0,0)"
 	local espColor = _G.ESPVisible and "rgb(0,255,0)" or "rgb(255,0,0)"
