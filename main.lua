@@ -79,11 +79,12 @@ end)
 
 -- Right Control toggles Aimbot
 UserInputService.InputBegan:Connect(function(input)
-	if input.KeyCode == Enum.KeyCode.RightControl then
-		_G.AimbotEnabled = not _G.AimbotEnabled
+	if input.KeyCode == Enum.KeyCode.RightShift then
+		_G.WRDClickTeleport = not _G.WRDClickTeleport
+		updateToggleText()
 		game.StarterGui:SetCore("SendNotification", {
-			Title = "Aimbot Toggle";
-			Text = "Aimbot is now " .. (_G.AimbotEnabled and "Enabled" or "Disabled");
+			Title = "Click Teleport Toggle";
+			Text = _G.WRDClickTeleport and "Click Teleport Enabled" or "Click Teleport Disabled";
 			Duration = 5;
 		})
 	end
@@ -177,3 +178,35 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
+-- UI Display for Toggles
+local toggleGui = Instance.new("ScreenGui", game.CoreGui)
+toggleGui.Name = "ToggleStatusGUI"
+
+local toggleText = Instance.new("TextLabel", toggleGui)
+toggleText.Size = UDim2.new(0, 300, 0, 80)
+toggleText.Position = UDim2.new(0, 10, 1, -90)
+toggleText.BackgroundTransparency = 1
+toggleText.TextXAlignment = Enum.TextXAlignment.Left
+toggleText.TextYAlignment = Enum.TextYAlignment.Top
+toggleText.Font = Enum.Font.Code
+toggleText.TextSize = 14
+toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleText.RichText = true
+toggleText.TextStrokeTransparency = 0.8
+
+local function updateToggleText()
+	local aimbotColor = _G.AimbotEnabled and "rgb(0,255,0)" or "rgb(255,0,0)"
+	local tpColor = _G.WRDClickTeleport and "rgb(0,255,0)" or "rgb(255,0,0)"
+	local espColor = _G.ESPVisible and "rgb(0,255,0)" or "rgb(255,0,0)"
+
+	toggleText.Text = string.format(
+		'<font color="%s">Aimbot [Right Ctrl]: %s</font>\n<font color="%s">Click TP [Right Shift]: %s</font>\n<font color="%s">ESP [I]: %s</font>',
+		aimbotColor, _G.AimbotEnabled and "On" or "Off",
+		tpColor, _G.WRDClickTeleport and "On" or "Off",
+		espColor, _G.ESPVisible and "On" or "Off"
+	)
+end
+
+-- Initial display
+updateToggleText()
