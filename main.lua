@@ -85,15 +85,6 @@ end)
 
 
 
--- Click Teleport Logic
-local mouse = LocalPlayer:GetMouse()
-UserInputService.InputBegan:Connect(function(input, gp)
-	if not gp and input.UserInputType == Enum.UserInputType.MouseButton1 then
-		if _G.WRDClickTeleport and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
-			LocalPlayer.Character:MoveTo(mouse.Hit.Position)
-		end
-	end
-end)
 
 -- ESP Setup
 local function CreateESP()
