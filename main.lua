@@ -83,18 +83,7 @@ UserInputService.InputBegan:Connect(function(input)
 	end
 end)
 
--- Keybind: Toggle Click Teleport (Right Shift)
-UserInputService.InputBegan:Connect(function(input)
-	if input.KeyCode == Enum.KeyCode.RightShift then
-		_G.WRDClickTeleport = not _G.WRDClickTeleport
-		updateToggleText()
-		game.StarterGui:SetCore("SendNotification", {
-			Title = "Click Teleport Toggle";
-			Text = _G.WRDClickTeleport and "Click Teleport Enabled" or "Click Teleport Disabled";
-			Duration = 5;
-		})
-	end
-end)
+
 
 -- Click Teleport Logic
 local mouse = LocalPlayer:GetMouse()
