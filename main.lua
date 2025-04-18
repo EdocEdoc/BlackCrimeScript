@@ -16,14 +16,6 @@ _G.TeamCheck = false
 _G.AimPart = "Head"
 _G.Sensitivity = 0
 
-_G.CircleSides = 64
-_G.CircleColor = Color3.fromRGB(255, 255, 255)
-_G.CircleTransparency = 0.7
-_G.CircleRadius = 80
-_G.CircleFilled = false
-_G.CircleVisible = true
-_G.CircleThickness = 0
-
 _G.WRDClickTeleport = true
 
 -- ESP Settings
@@ -39,19 +31,9 @@ _G.TextTransparency = 0.7
 _G.TextFont = Drawing.Fonts.UI
 _G.DisableKey = Enum.KeyCode.I
 
--- Create FOV Circle
-local FOVCircle = Drawing.new("Circle")
-FOVCircle.Radius = _G.CircleRadius
-FOVCircle.Filled = _G.CircleFilled
-FOVCircle.Color = _G.CircleColor
-FOVCircle.Visible = _G.CircleVisible
-FOVCircle.Transparency = _G.CircleTransparency
-FOVCircle.NumSides = _G.CircleSides
-FOVCircle.Thickness = _G.CircleThickness
-
--- Closest Player Finder
+-- Closest Player Finder (updated for no circle)
 local function GetClosestPlayer()
-	local maxDist, target = _G.CircleRadius, nil
+	local maxDist, target = math.huge, nil  -- Use math.huge for maximum distance initially
 	for _, v in pairs(Players:GetPlayers()) do
 		if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
 			if not _G.TeamCheck or v.Team ~= LocalPlayer.Team then
@@ -68,7 +50,14 @@ local function GetClosestPlayer()
 	return target
 end
 
+-- Aimbot Holding
+UserInputService.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton2 then Holding = true end
+end)
 
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton2 then Holding = false end
+end)
 
 -- Keybind: Toggle Aimbot (Right Ctrl)
 UserInputService.InputBegan:Connect(function(input)
@@ -83,8 +72,28 @@ UserInputService.InputBegan:Connect(function(input)
 	end
 end)
 
+-- Keybind: Toggle Click Teleport (Right Shift)
+UserInputService.InputBegan:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.RightShift then
+		_G.WRDClickTeleport = not _G.WRDClickTeleport
+		updateToggleText()
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Click Teleport Toggle";
+			Text = _G.WRDClickTeleport and "Click Teleport Enabled" or "Click Teleport Disabled";
+			Duration = 5;
+		})
+	end
+end)
 
-
+-- Click Teleport Logic
+local mouse = LocalPlayer:GetMouse()
+UserInputService.InputBegan:Connect(function(input, gp)
+	if not gp and input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if _G.WRDClickTeleport and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+			LocalPlayer.Character:MoveTo(mouse.Hit.Position)
+		end
+	end
+end)
 
 -- ESP Setup
 local function CreateESP()
@@ -141,9 +150,6 @@ pcall(CreateESP)
 
 -- Update loop
 RunService.RenderStepped:Connect(function()
-	local mousePos = UserInputService:GetMouseLocation()
-	FOVCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
-
 	if Holding and _G.AimbotEnabled then
 		local target = GetClosestPlayer()
 		if target and target.Character and target.Character:FindFirstChild(_G.AimPart) then
