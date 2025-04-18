@@ -68,14 +68,7 @@ local function GetClosestPlayer()
 	return target
 end
 
--- Aimbot Holding
-UserInputService.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton2 then Holding = true end
-end)
 
-UserInputService.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton2 then Holding = false end
-end)
 
 -- Keybind: Toggle Aimbot (Right Ctrl)
 UserInputService.InputBegan:Connect(function(input)
